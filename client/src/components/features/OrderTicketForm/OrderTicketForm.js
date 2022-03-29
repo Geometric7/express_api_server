@@ -45,7 +45,7 @@ class OrderTicketForm extends React.Component {
 
     if(order.client && order.email && order.day && order.seat) {
       addSeat(order);
-      this.setState({ 
+      this.setState({
         order: {
           client: '',
           email: '',
@@ -92,15 +92,16 @@ class OrderTicketForm extends React.Component {
             </FormGroup>
             <FormGroup check>
               <Label check>
+              {/* eslint-disable-next-line */}
                 <Input required type="checkbox" /> I agree with <a href="#">Terms and conditions</a> and <a href="#">Privacy Policy</a>.
               </Label>
             </FormGroup>
             <Button color="primary" className="mt-3">Submit</Button>
           </Col>
           <Col xs="12" md="6">
-            <SeatChooser 
+            <SeatChooser
               chosenDay={order.day}
-              chosenSeat={order.seat} 
+              chosenSeat={order.seat}
               updateSeat={updateSeat} />
           </Col>
         </Row>

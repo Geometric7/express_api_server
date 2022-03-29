@@ -8,45 +8,44 @@ router.route('/seats').get((req, res) => {
 });
 
 router.route('/seats/:id').get((req, res) => {
-  const item = db.seats.filter((item) => item.id == req.params.id);
-  res.json(item);
+  res.json(db.seats.filter((item) => item.id === req.params.id));
 });
 
-router.route('/seats').get((req, res) => {
-  const newSeat = {
+router.route('/seats').post((req, res) => {
+  const newData = {
     id: uuidv4(),
-    day: req.params.day,
-    seat: req.params.seat,
-    client: req.params.client,
-    email: req.params.email,
+    day: req.body.day,
+    seat: req.body.seat,
+    client: req.body.client,
+    email: req.body.email,
+  };
+  if(db.seats.some(checkSeat => (checkSeat.day === req.body.day && checkSeat.seat === req.body.seat))) {
+    return res.status(404).json({ message: "The slot is already taken..." });
+  } else {
+    db.seats.push(newData);
+    return res.json({message: 'Reserved complete'});
   }
-  db.seats.push(newSeat);
-});
-
-router.route('/seats/:id').put((req, res) => {
-  const choosenSeat = db.seats.filter((item) => item.id == req.params.id);
-  const indexOf = db.seats.indexOf(choosenSeat);
-  const editedSeat = {
-    ...choosenSeat,
-    id: uuidv4(),
-    day: req.params.day,
-    seat: req.params.seat,
-    client: req.params.client,
-    email: req.params.email,
-  }
-  db[indexOf] = editedSeat;
-  res.json({
-    message: 'OK'
-  })
 });
 
 router.route('/seats/:id').delete((req, res) => {
-  const choosenSeat = db.seats.filter((item) => item.id == req.params.id);
-  const indexOf = db.seats.indexOf(choosenSeat);
-  db.seats.slice(indexOf, 1);
-  res.json({
-    message: 'OK'
-  });
+  const deletedSeats = db.seats.filter((item) => item.id === req.params.id);
+  const indexOfSeats = db.seats.indexOf(deletedSeats);
+  db.concerts.splice(indexOfSeats, 1);
+  return res.json({message: 'OK'});
+});
+
+router.route('/seats/:id').put((req, res) => {
+  const editedConcerts = db.concerts.filter((item) => item.id === req.params.id);
+  const indexOfConcerts = db.concerts.filter((item) => item.id === req.params.id);
+  const newConcert = {
+    ...editedConcerts,
+    day: req.body.day,
+    seat: req.body.seat,
+    client: req.body.client,
+    email: req.body.email,
+  };
+  db.concerts[indexOfConcerts] = newConcert;
+  return res.json({message: 'OK'});
 });
 
 module.exports = router;
