@@ -8,51 +8,42 @@ router.route('/concerts').get((req, res) => {
 });
 
 router.route('/concerts/:id').get((req, res) => {
-  const item = db.concerts.filter((item) => item.id == req.params.id);
-  res.json(item);
+  res.json(db.concerts.filter((item) => item.id == req.params.id));
 });
 
 router.route('/concerts').post((req, res) => {
-  const newConcert = {
+  const newData = {
     id: uuidv4(),
     performer: req.body.performer,
-    text: req.body.text,
     genre: req.body.genre,
     price: req.body.price,
     day: req.body.day,
     image: req.body.image,
   };
-  db.concerts.push(newConcert);
-  res.json({
-    message: 'OK'
-  });
+  db.concerts.push(newData);
+  return res.json({message: 'ok'});
+});
+
+router.route('/concerts/:id').delete((req, res) => {
+  const deletedConcerts = db.concerts.filter((item) => item.id == req.params.id);
+  const indexOfConcerts = db.concerts.indexOf(deletedConcerts);
+  db.concerts.splice(indexOfConcerts, 1);
+  return res.json({message: 'ok'});
 });
 
 router.route('/concerts/:id').put((req, res) => {
-  const choosenConcert = db.concerts.filter((item) => item.id == req.params.id);
-  const indexOf = db.concerts.indexOf(choosenConcert);
-  const editedTestimonial = {
-    ...choosenConcert,
+  const editedConcerts = db.concerts.filter((item) => item.id == req.params.id);
+  const indexOfConcerts = db.concerts.indexOf(editedConcerts);
+  const newConcert = {
+    ...editedConcerts,
     performer: req.body.performer,
-    text: req.body.text,
     genre: req.body.genre,
     price: req.body.price,
     day: req.body.day,
     image: req.body.image,
-  }
-  db[indexOf] = editedTestimonial;
-  res.json({
-    message: 'OK'
-  });
+  };
+  db.concerts[indexOfConcerts] = newConcert;
+  return res.json({message: 'ok'});
 });
-
-router.route('/concerts/:id').delete((req, res) => {
-  const choosenConcert = db.concerts.filter((item) => item.id == req.params.id);
-  const indexOf = db.concerts.indexOf(choosenConcert);
-  db.concerts.splice(indexOf, 1);
-  res.json({
-    message: 'OK'
-  });
-})
 
 module.exports = router;
